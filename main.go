@@ -18,7 +18,16 @@ func main() {
 	argsWithoutProg := os.Args[1:]
 	word := make([]string, len(argsWithoutProg))
 	rands := []string{}
-	for _, v := range argsWithoutProg {
+	strlen := len(argsWithoutProg)
+	if a, err := strconv.Atoi(argsWithoutProg[strlen-1]); err == nil {
+		// word = word[:strlen-1]
+		word = make([]string, len(argsWithoutProg)-1)
+		strlen = a
+	}
+	for i, v := range argsWithoutProg {
+		if i == len(word) {
+			break
+		}
 		if strings.Contains(v, ":") {
 			s := strings.Split(v, ":")
 			ind, _ := strconv.Atoi(s[0])
@@ -30,6 +39,7 @@ func main() {
 
 	list := client.Permute(rands)
 	// fmt.Println(list)
+	var found = make(map[string]int)
 	for i := 0; i < len(list); i++ {
 		k := 0
 		findstr := []string{}
@@ -42,13 +52,27 @@ func main() {
 				findstr = append(findstr, word[j])
 			}
 		}
-		// fmt.Println(strings.Join(findstr, ""))
-		if findWord(strings.Join(findstr, "")) {
-			fmt.Println(strings.Join(findstr, ""))
+		s := strings.Join(findstr[0:strlen], "")
+		// fmt.Println(strlen)
+		if found[s] == 1 {
+			continue
+		}
+		found[s] = 1
+		// fmt.Println(found)
+		// fmt.Println(s)
+		if findWord(s) {
+			fmt.Println(s)
 		}
 	}
 
 }
+
+// func checkNum(s string) bool {
+// 	if _, err := strconv.Atoi(s); err == nil {
+// 		return true
+// 	}
+// 	return false
+// }
 
 func findWord(str string) bool {
 	file, _ := os.Open("words_alpha.txt")
