@@ -15,16 +15,10 @@ const SPLIT_NUM = 1000
 const PAGE_NUM = 371
 
 func main() {
-	argsWithoutProg := os.Args[1:]
-	word := make([]string, len(argsWithoutProg))
+	wordlen, strlen := getLen()
+	word := make([]string, wordlen)
 	rands := []string{}
-	strlen := len(argsWithoutProg)
-	if a, err := strconv.Atoi(argsWithoutProg[strlen-1]); err == nil {
-		// word = word[:strlen-1]
-		word = make([]string, len(argsWithoutProg)-1)
-		strlen = a
-	}
-	for i, v := range argsWithoutProg {
+	for i, v := range os.Args[1:] {
 		if i == len(word) {
 			break
 		}
@@ -67,12 +61,22 @@ func main() {
 
 }
 
-// func checkNum(s string) bool {
-// 	if _, err := strconv.Atoi(s); err == nil {
-// 		return true
-// 	}
-// 	return false
-// }
+func getLen() (int, int) {
+	argsWithoutProg := os.Args[1:]
+	argsLen := len(argsWithoutProg)
+	if v, is := checkNum(argsWithoutProg[argsLen-1]); is {
+		return argsLen - 1, v
+	}
+
+	return argsLen, argsLen
+}
+
+func checkNum(s string) (int, bool) {
+	if v, err := strconv.Atoi(s); err == nil {
+		return v, true
+	}
+	return 0, false
+}
 
 func findWord(str string) bool {
 	file, _ := os.Open("words_alpha.txt")
